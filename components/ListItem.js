@@ -1,12 +1,8 @@
 import React from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  Platform,
-} from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { formatPercentage } from "../utils/formatPercentage";
+import { formatPrice } from "../utils/formatPrice";
+import { getPriceChangeColor } from "../utils/getPriceChangeColor";
 
 const ListItem = ({
   name,
@@ -16,7 +12,6 @@ const ListItem = ({
   logoUrl,
   onPress,
 }) => {
-  const priceChangeColor = priceChangePercentage7d > 0 ? "#34C759" : "#FF3B30";
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.itemWrapper}>
@@ -28,14 +23,14 @@ const ListItem = ({
           </View>
         </View>
         <View style={styles.rightWrapper}>
-          <Text style={styles.title}>
-            $
-            {Platform.OS === "ios"
-              ? currentPrice.toLocaleString("en-US", { currency: "USD" })
-              : currentPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-          </Text>
-          <Text style={[styles.subTitle, { color: priceChangeColor }]}>
-            {priceChangePercentage7d.toFixed(2)}%
+          <Text style={styles.title}>{formatPrice(currentPrice)}</Text>
+          <Text
+            style={[
+              styles.subTitle,
+              { color: getPriceChangeColor(priceChangePercentage7d) },
+            ]}
+          >
+            {formatPercentage(priceChangePercentage7d)}
           </Text>
         </View>
       </View>

@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from "react";
+import React, { useRef, useMemo, useState } from "react";
 import { FlatList, StyleSheet, Text, View, SafeAreaView } from "react-native";
 import {
   BottomSheetModal,
@@ -6,6 +6,7 @@ import {
 } from "@gorhom/bottom-sheet";
 
 import ListItem from "./components/ListItem";
+import Chart from "./components/Chart";
 import { SAMPLE_DATA } from "./assets/data/sampleData";
 
 const ListHeader = () => (
@@ -18,10 +19,12 @@ const ListHeader = () => (
 );
 
 export default function App() {
+  const [selectedCoinData, setSelectedCoinData] = useState(null);
   const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => ["50%"], []);
+  const snapPoints = useMemo(() => ["45%"], []);
 
-  const openModal = () => {
+  const openModal = (item) => {
+    setSelectedCoinData(item);
     bottomSheetModalRef.current?.present();
   };
 
@@ -40,7 +43,7 @@ export default function App() {
                 item.price_change_percentage_7d_in_currency
               }
               logoUrl={item.image}
-              onPress={() => openModal()}
+              onPress={() => openModal(item)}
             />
           )}
           ListHeaderComponent={ListHeader}
@@ -53,18 +56,24 @@ export default function App() {
         snapPoints={snapPoints}
         style={styles.bottomSheet}
       >
-        <View style={styles.contentContainer}>
-          <Text>Awesome 🎉</Text>
-        </View>
+        {selectedCoinData ? (
+          <Chart
+            currentPrice={selectedCoinData.current_price}
+            logoUrl={selectedCoinData.image}
+            name={selectedCoinData.name}
+            symbol={selectedCoinData.symbol}
+            priceChangePercentage7d={
+              selectedCoinData.price_change_percentage_7d_in_currency
+            }
+            sparkline={selectedCoinData.sparkline_in_7d.price}
+          />
+        ) : null}
       </BottomSheetModal>
     </BottomSheetModalProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  contentContainer: {
-    flex: 1,
-  },
   container: {
     flex: 1,
     backgroundColor: "#fff",
