@@ -4,5 +4,7 @@ export const formatPrice = (price) => {
   "worklet";
   return Platform.OS === "ios"
     ? `\$${price.toLocaleString("en-US", { currency: "USD" })}`
-    : `\$${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+    : `\$${parseFloat(price.toString())
+        .toFixed(2)
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
 };
